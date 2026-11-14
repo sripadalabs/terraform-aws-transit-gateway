@@ -42,6 +42,24 @@ variable "enable_default_route_table_propagation" {
   default     = false
 }
 
+variable "enable_auto_accept_shared_attachments" {
+  description = "Whether resource attachment requests are automatically accepted."
+  type        = bool
+  default     = true
+}
+
+variable "enable_dns_support" {
+  description = "Whether DNS support is enabled."
+  type        = bool
+  default     = true
+}
+
+variable "enable_vpn_ecmp_support" {
+  description = "Whether VPN ECMP support is enabled."
+  type        = bool
+  default     = true
+}
+
 variable "flow_logs_s3_bucket_arn" {
   description = "ARN of the S3 bucket that receives Transit Gateway Flow Logs."
   type        = string
