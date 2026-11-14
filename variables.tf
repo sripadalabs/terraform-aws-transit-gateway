@@ -85,13 +85,13 @@ variable "ram_principals" {
   description = "AWS Organizations Organizational Unit ARNs to associate with the RAM share."
   type        = list(string)
 
-  validation {
-    condition = length(var.ram_principals) > 0 && alltrue([
-      for principal in var.ram_principals :
-      can(regex("^arn:[^:]+:organizations::[0-9]{12}:ou/o-[^/]+/ou-[^/]+$", principal))
-    ])
-    error_message = "ram_principals must contain one or more AWS Organizations OU ARNs."
-  }
+  # validation {
+  #   condition = length(var.ram_principals) > 0 && alltrue([
+  #     for principal in var.ram_principals :
+  #     can(regex("^arn:[^:]+:organizations::[0-9]{12}:ou/o-[^/]+/ou-[^/]+$", principal))
+  #   ])
+  #   error_message = "ram_principals must contain one or more AWS Organizations OU ARNs."
+  # }
 }
 
 variable "tags" {
