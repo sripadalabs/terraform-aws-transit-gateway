@@ -72,6 +72,7 @@ resource "aws_ram_resource_share" "this" {
 resource "aws_ram_resource_association" "this" {
   resource_arn       = aws_ec2_transit_gateway.this.arn
   resource_share_arn = aws_ram_resource_share.this.arn
+  depends_on = [aws_ram_principal_association.organization_units]
 }
 
 resource "aws_ram_principal_association" "organization_units" {
