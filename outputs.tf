@@ -8,6 +8,16 @@ output "transit_gateway_arn" {
   value       = aws_ec2_transit_gateway.this.arn
 }
 
+output "association_route_table_id" {
+  description = "ID of the Transit Gateway route table for attachment associations."
+  value       = aws_ec2_transit_gateway_route_table.association.id
+}
+
+output "propagation_route_table_id" {
+  description = "ID of the Transit Gateway route table for route propagation."
+  value       = aws_ec2_transit_gateway_route_table.propagation.id
+}
+
 output "ssm_parameter_name" {
   description = "Name of the SSM parameter containing the Transit Gateway ID."
   value       = aws_ssm_parameter.transit_gateway_id.name

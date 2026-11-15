@@ -6,7 +6,7 @@ locals {
     "$${protocol} $${type} $${flow-direction} $${tcp-flags}",
     "$${packets} $${bytes} $${packets-lost-no-route} $${packets-lost-blackhole} $${packets-lost-mtu-exceeded} $${packets-lost-ttl-expired}",
     "$${start} $${end} $${log-status}"
-    ])
+  ])
 }
 
 resource "aws_ec2_transit_gateway" "this" {
@@ -15,8 +15,8 @@ resource "aws_ec2_transit_gateway" "this" {
   default_route_table_association = var.enable_default_route_table_association ? "enable" : "disable"
   default_route_table_propagation = var.enable_default_route_table_propagation ? "enable" : "disable"
   auto_accept_shared_attachments  = var.enable_auto_accept_shared_attachments ? "enable" : "disable"
-  dns_support                       = var.enable_dns_support ? "enable" : "disable"
-  vpn_ecmp_support                  = var.enable_vpn_ecmp_support ? "enable" : "disable"
+  dns_support                     = var.enable_dns_support ? "enable" : "disable"
+  vpn_ecmp_support                = var.enable_vpn_ecmp_support ? "enable" : "disable"
 
   tags = merge(var.tags, {
     Name = var.name
@@ -26,21 +26,29 @@ resource "aws_ec2_transit_gateway" "this" {
 # AWS’s Transit Gateway Flow Logs field list: 
 # https://docs.aws.amazon.com/vpc/latest/tgw/tgw-flow-logs.html#flow-logs-fields.
 resource "aws_flow_log" "this" {
-  log_destination      = var.flow_logs_s3_bucket_arn
-  log_destination_type = "s3"
-  transit_gateway_id   = aws_ec2_transit_gateway.this.id
-  log_format           = local.flow_log_format
+  log_destination          = var.flow_logs_s3_bucket_arn
+  log_destination_type     = "s3"
+  transit_gateway_id       = aws_ec2_transit_gateway.this.id
+  log_format               = local.flow_log_format
   max_aggregation_interval = 60
   tags = merge(var.tags, {
     Name = "${var.name}-flow-logs"
   })
 }
 
-resource "aws_ec2_transit_gateway_route_table" "this" {
+resource "aws_ec2_transit_gateway_route_table" "association" {
   transit_gateway_id = aws_ec2_transit_gateway.this.id
 
   tags = merge(var.tags, {
-    Name = "${var.name}-route-table"
+    Name = "tgw-rt-nonprod-association-${var.amazon_side_asn}"
+  })
+}
+
+resource "aws_ec2_transit_gateway_route_table" "propagation" {
+  transit_gateway_id = aws_ec2_transit_gateway.this.id
+
+  tags = merge(var.tags, {
+    Name = "tgw-rt-nonprod-propagation-${var.amazon_side_asn}"
   })
 }
 

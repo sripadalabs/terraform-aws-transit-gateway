@@ -1,6 +1,6 @@
 # terraform-aws-transit-gateway
 
-Creates an AWS Transit Gateway, exports its ID to Systems Manager Parameter Store, enables S3 Flow Logs, and shares the gateway with AWS Organizations organizational units through AWS RAM. The provider infers the Transit Gateway Flow Log resource type from `transit_gateway_id`. This module does not create VPC attachments or configure Transit Gateway route tables.
+Creates an AWS Transit Gateway, separate association and propagation route tables, exports its ID to Systems Manager Parameter Store, enables S3 Flow Logs, and shares the gateway with AWS Organizations organizational units through AWS RAM. The provider infers the Transit Gateway Flow Log resource type from `transit_gateway_id`. This module does not create VPC attachments or configure route-table associations or propagations for attachments.
 
 ## Requirements
 
@@ -32,7 +32,7 @@ module "transit_gateway" {
 }
 ```
 
-Default Transit Gateway route table association and propagation are disabled. Set `enable_default_route_table_association` or `enable_default_route_table_propagation` to `true` to enable either behavior. Those settings only control the gateway's automatic defaults; this module does not create or manage route tables or attachments.
+Default Transit Gateway route table association and propagation are disabled. Set `enable_default_route_table_association` or `enable_default_route_table_propagation` to `true` to enable either behavior. Those settings only control the gateway's automatic defaults. This module creates dedicated association and propagation route tables, named `tgw-rt-nonprod-association-<amazon_side_asn>` and `tgw-rt-nonprod-propagation-<amazon_side_asn>`; use their ID outputs to configure attachments in a separate module.
 
 ## Inputs
 
@@ -54,6 +54,8 @@ Default Transit Gateway route table association and propagation are disabled. Se
 | --- | --- |
 | `transit_gateway_id` | Transit Gateway ID |
 | `transit_gateway_arn` | Transit Gateway ARN |
+| `association_route_table_id` | ID of the Transit Gateway route table for attachment associations |
+| `propagation_route_table_id` | ID of the Transit Gateway route table for route propagation |
 | `ssm_parameter_name` | Name of the SSM parameter containing the ID |
 | `ssm_parameter_arn` | ARN of the SSM parameter containing the ID |
 | `ram_resource_share_arn` | RAM resource share ARN |
