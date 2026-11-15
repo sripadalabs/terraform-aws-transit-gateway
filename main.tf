@@ -31,6 +31,7 @@ resource "aws_flow_log" "this" {
   transit_gateway_id   = aws_ec2_transit_gateway.this.id
   log_format           = local.flow_log_format
   max_aggregation_interval = 60
+  
   tags = merge(var.tags, {
     Name = "${var.name}-flow-logs"
   })
